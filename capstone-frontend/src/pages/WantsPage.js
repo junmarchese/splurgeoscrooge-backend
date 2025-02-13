@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Box, Button, Container, Typography, Alert } from '@mui/material';
 import { useBudget } from '../contexts/BudgetContext';
@@ -48,67 +48,32 @@ const wantsCategories = [
 export default function WantsPage() {
   const navigate = useNavigate();
   const { user } = useUser();
-  const { state, dispatch } = useBudget();
+  const { budget, updateSpending } = useBudget();
   const [useTotal, setUseTotal] = useState(false);
   const [openFinder, setOpenFinder] = useState(false);
   const [error, setError] = useState('');
 
-  // Initialize wants spending if not present
-  useEffect(() => {
-    if (!state?.spending?.wants) {
-      dispatch({ 
-        type: 'SET_BUDGET', 
-        payload: {
-          ...state,
-          spending: {
-            ...state?.spending,
-            wants: {}
-          }
-        }
-      });
-    }
-  }, [state, dispatch]);
+  const wantsSpending = budget.spending.wants || {};
+  const allocatedWantsAmount = (budget.percentages.wants / 100) * budget.income;
 
-  // Safely access wants spending with default empty object
-  const wantsSpending = state?.spending?.wants || {};
-
-  // Calculate total with safe checks
   const calculatedTotal = Object.entries(wantsSpending)
-    .filter(([key, value]) => 
-      key !== 'total' && 
-      typeof value === 'number' && 
-      !isNaN(value)
-    )
+    .filter(([key, value]) => key !== 'total' && typeof value === 'number')
     .reduce((sum, [_, value]) => sum + value, 0);
 
   const handleCategoryChange = (field, value) => {
     const numericValue = parseFloat(value) || 0;
-    dispatch({
-      type: 'UPDATE_SPENDING',
-      category: 'wants',
-      field,
-      value: numericValue
-    });
+    updateSpending('wants', field, numericValue);
   };
 
   const handleContinue = () => {
     const totalWants = useTotal ? (wantsSpending.total || 0) : calculatedTotal;
 
-    const allocatedBudgetWants = state?.percentages?.wants 
-      ? (state.percentages.wants / 100) * (state.income || 0) 
-      : 0;
-
-    if (totalWants > allocatedBudgetWants) {
+    if (totalWants > allocatedWantsAmount) {
       setError('Wants spending exceeds allocated budget!');
       return;
     }
 
-    dispatch({ 
-      type: 'UPDATE_SPENDING',
-      category: 'wants',
-      field: 'total',
-      value: totalWants
-    });
+    updateSpending('wants', 'total', totalWants);
     
     if (user?.username) {
       localStorage.setItem(`wantsState_${user.username}`, JSON.stringify(wantsSpending));
@@ -119,7 +84,7 @@ export default function WantsPage() {
 
   return (
     <Container maxWidth="md" sx={{ pb: 8, pt: 10, backgroundColor: '#FDE2E4' }}>
-      <Typography variant="h1" gutterBottom align="center">
+      <Typography variant="h4" gutterBottom align="center">
         Wants
       </Typography>
 

@@ -1,127 +1,78 @@
-import React, { createContext, useContext, useReducer, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 
+const BudgetContext = createContext();
 
-
-// Load initial state from localStorage if available
-const savedState = JSON.parse(localStorage.getItem("budgetState"));
-
-const initialState = savedState || {
+const initialBudgetState = {
   income: 0,
-  spending: {
-    needs: {},
-    wants: {},
-    savings: {}
-  },
   percentages: {
     needs: 50,
     wants: 30,
     savings: 20
   },
-  remainingIncomeBalance: 0
+  spending: {
+    needs: {},
+    wants: {},
+    savings: {}
+  }
 };
 
-// Reducer function to manage updates
-function budgetReducer(state, action) {
-  switch (action.type) {
-    case 'SET_BUDGET':
-      return {
-        ...state,
-        ...action.payload
-      };
-    case 'SET_INCOME':
-      return {
-        ...state,
-        income: action.payload
-      };
-    case 'SET_REMAINING_BALANCE':
-      return {
-        ...state,
-        remainingIncomeBalance: action.payload
-      };
-    case 'UPDATE_PERCENTAGES':
-      return {
-        ...state,
-        percentages: {
-          ...state.percentages,
-          ...action.payload
-        }
-      };
-    case 'UPDATE_SPENDING':
-      return {
-        ...state,
-        spending: {
-          ...state.spending,
-          [action.category]: {
-            ...state.spending[action.category],
-            [action.field]: action.value
-          }
-        }
-      };
-    case 'INITIALIZE_NEEDS':
-      return {
-        ...state,
-        spending: {
-          ...state.spending,
-          needs: state.spending.needs || {}
-        }
-      };
-    case 'INITIALIZE_WANTS':
-      return {
-        ...state,
-        spending: {
-          ...state.spending,
-          wants: state.spending.wants || {}
-        }
-      };
-    case 'INITIALIZE_SAVINGS':
-      return {
-        ...state,
-        spending: {
-          ...state.spending,
-          savings: state.spending.savings || {}
-        }
-      };
-    case 'RESET_BUDGET':
-      return initialState; // Reset everything
-    default:
-      return state;
-  }
-}
-
-// Context setup
-export const BudgetContext = createContext( {
-  income: 0,
-  spending: {
-    needs: {},
-    wants: {},
-    savings: {}
-  },
-  percentages: {
-    needs: 50,
-    wants: 30,
-    savings: 20
-  },
-  remainingIncomeBalance: 0
-});
-
 export function BudgetProvider({ children }) {
-  const [state, dispatch] = useReducer(budgetReducer, initialState);
+  const [budget, setBudget] = useState(() => {
+    // Load from localStorage on initial render
+    const savedBudget = localStorage.getItem('budgetState');
+    return savedBudget ? JSON.parse(savedBudget) : initialBudgetState;
+  });
 
-  // Helper function to make it easier for components to update budget
-  const setBudget = (budgetData) => {
-    dispatch({ type: 'SET_BUDGET', payload: budgetData });
+  // Save to localStorage whenever budget changes
+  useEffect(() => {
+    localStorage.setItem('budgetState', JSON.stringify(budget));
+  }, [budget]);
+
+  const updateIncome = (income) => {
+    setBudget(prev => ({
+      ...prev,
+      income: Number(income)
+    }));
   };
 
-  // Load data from localStorage on first render
-  useEffect(() => {
-    const savedData = JSON.parse(localStorage.getItem("budgetState"));
-    if (savedData) {
-      dispatch({ type: 'SET_BUDGET', payload: savedData });
-    }
-  }, []);
+  const updatePercentages = (newPercentages) => {
+    setBudget(prev => ({
+      ...prev,
+      percentages: {
+        ...prev.percentages,
+        ...newPercentages
+      }
+    }));
+  };
+
+  const updateSpending = (category, field, value) => {
+    setBudget(prev => ({
+      ...prev,
+      spending: {
+        ...prev.spending,
+        [category]: {
+          ...prev.spending[category],
+          [field]: Number(value)
+        }
+      }
+    }));
+  };
+
+  const resetBudget = () => {
+    setBudget(initialBudgetState);
+    localStorage.removeItem('budgetState');
+  };
+
+  const value = {
+    budget,
+    updateIncome,
+    updatePercentages,
+    updateSpending,
+    resetBudget
+  };
 
   return (
-    <BudgetContext.Provider value={{ state, dispatch, setBudget }}>
+    <BudgetContext.Provider value={value}>
       {children}
     </BudgetContext.Provider>
   );
@@ -129,9 +80,8 @@ export function BudgetProvider({ children }) {
 
 export function useBudget() {
   const context = useContext(BudgetContext);
- 
   if (!context) {
     throw new Error('useBudget must be used within a BudgetProvider');
   }
-  return [context];
+  return context;
 }

@@ -58,6 +58,7 @@ router.get('/fetch', async (req, res) => {
     const response = await fetch(`https://api.bls.gov/publicAPI/v2/timeseries/data/${seriesId}`);
     const data = await response.json();
 
+    console.log("result:",data )
     if (!data || !data.Results || !data.Results.series) {
       return res.status(404).json({ message: "No price data found for this series ID." });
     }

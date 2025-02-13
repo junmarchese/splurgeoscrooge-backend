@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Box, Button, Container, Typography, Alert } from '@mui/material';
 import { useBudget } from '../contexts/BudgetContext';
@@ -21,75 +21,38 @@ const needsCategories = [
 
 export default function NeedsPage() {
   const navigate = useNavigate();
-  const { state, dispatch } = useBudget();
+  const { budget, updateSpending } = useBudget();
   const [useTotal, setUseTotal] = useState(false);
   const [openFinder, setOpenFinder] = useState(false);
   const [error, setError] = useState('');
 
-  // Initialize needs spending if not present
-  useEffect(() => {
-    if (!state?.spending?.needs) {
-      dispatch({ 
-        type: 'SET_BUDGET', 
-        payload: {
-          ...state,
-          spending: {
-            ...state?.spending,
-            needs: {}
-          }
-        }
-      });
-    }
-  }, [state, dispatch]);
+  const needsSpending = budget.spending.needs || {};
+  const allocatedNeedsAmount = (budget.percentages.needs / 100) * budget.income;
 
-  // Safely access needs spending with default empty object
-  const needsSpending = state?.spending?.needs || {};
-
-  // Calculate total with safe checks
-  const calculatedTotal = Object.entries(needsSpending || {})
-    .filter(([key, value]) => 
-      key !== 'total' && 
-      typeof value === 'number' && 
-      !isNaN(value)
-    )
+  const calculatedTotal = Object.entries(needsSpending)
+    .filter(([key, value]) => key !== 'total' && typeof value === 'number')
     .reduce((sum, [_, value]) => sum + value, 0);
-
-  const handleContinue = () => {
-    const total = useTotal ? (needsSpending.total || 0) : calculatedTotal;
-    
-    // Safely calculate allocated budget
-    const allocatedBudget = state?.percentages?.needs 
-      ? (state.percentages.needs / 100) * (state.income || 0) 
-      : 0;
-
-    if (total > allocatedBudget) {
-      setError('Needs spending exceeds allocated budget!');
-      return;
-    }
-    
-    dispatch({ 
-      type: 'UPDATE_SPENDING',
-      category: 'needs',
-      field: 'total',
-      value: total
-    });
-    
-    navigate('/wants');
-  };
 
   const handleCategoryChange = (field, value) => {
     const numericValue = parseFloat(value) || 0;
-    dispatch({
-      type: 'UPDATE_SPENDING',
-      category: 'needs',
-      field,
-      value: numericValue
-    });
+    updateSpending('needs', field, numericValue);
+  };
+
+  const handleContinue = () => {
+    const totalNeeds = useTotal ? (needsSpending.total || 0) : calculatedTotal;
+
+    if (totalNeeds > allocatedNeedsAmount) {
+      setError('Needs spending exceeds allocated budget!');
+      return;
+    }
+
+    updateSpending('needs', 'total', totalNeeds);
+    navigate('/wants');
   };
 
   return (
     <Container maxWidth="md" sx={{ pb: 8, pt: 10, backgroundColor: '#e0f7f1' }}>
-      <Typography variant="h1" gutterBottom align="center">
+      <Typography variant="h4" gutterBottom align="center">
         Needs
       </Typography>
 
@@ -152,10 +115,6 @@ export default function NeedsPage() {
       <PriceFinderModal
         open={openFinder}
         onClose={() => setOpenFinder(false)}
-        onSelect={(seriesId)=>{
-
-///call for the price
-        }}
       />
     </Container>
   );

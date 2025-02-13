@@ -3,8 +3,8 @@ import { BrowserRouter as Router } from 'react-router-dom';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import { UserProvider } from './contexts/UserContext';
-import AppRoutes from './routes/AppRoutes'; // ✅ Import AppRoutes
 import { BudgetProvider } from './contexts/BudgetContext';
+import AppRoutes from './routes/AppRoutes';
 
 const theme = createTheme({
   palette: {
@@ -13,17 +13,15 @@ const theme = createTheme({
   }
 });
 
-
-
 function App() {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <UserProvider>
-        <BudgetProvider value={{}}>
-        <Router>
-          <AppRoutes /> 
-        </Router>
+        <BudgetProvider>
+          <Router>
+            <AppRoutes />
+          </Router>
         </BudgetProvider>
       </UserProvider>
     </ThemeProvider>

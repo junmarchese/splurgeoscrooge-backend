@@ -12,11 +12,11 @@ describe('Auth Integration Tests', () => {
     const signupResponse = await request(app)
       .post('/api/auth/signup')
       .send({
-        username: 'testuser',
-        password: 'password123',
+        username: 'testapp',
+        password: 'testapp123',
         firstName: 'Test',
-        lastName: 'User',
-        email: 'test@example.com'
+        lastName: 'App',
+        email: 'testapp@example.com'
       });
 
     expect(signupResponse.status).toBe(201);
@@ -26,8 +26,8 @@ describe('Auth Integration Tests', () => {
     const loginResponse = await request(app)
       .post('/api/auth/login')
       .send({
-        username: 'testuser',
-        password: 'password123'
+        username: 'testapp',
+        password: 'testapp123'
       });
 
     expect(loginResponse.status).toBe(200);

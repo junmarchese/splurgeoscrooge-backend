@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest --runInBand --detectOpenHandles",
     "db:migrate": "npx sequelize-cli db:migrate --config config/config.js",
     "db:seed": "npx sequelize-cli db:seed:all --config config/config.js",
     "db:status": "npx sequelize-cli db:migrate:status --config config/config.js"

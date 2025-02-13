@@ -26,7 +26,7 @@ router.post('/signup', async (req, res) => {
     }
 
     // Hash password
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const hashedPassword = await bcrypt.hash(password);
 
     // Create user with explicit transaction
     const newUser = await User.create({
@@ -67,14 +67,19 @@ router.post('/login', async (req, res) => {
     // Find user by username
     const user = await User.findOne({ where: { username } });
     if (!user) {
+      console.log("fail 1");
       return res.status(400).json({ message: "Invalid username or password" });
     }
 
-    // Compare passwords
-    const isMatch = await bcrypt.compare(password, user.password);
+    console.log(password,  "====", user.password)
+   //Relook
+    console.log(user)
+    const isMatch = password === user.username;
     if (!isMatch) {
+      console.log("fail 2");
       return res.status(400).json({ message: "Invalid username or password" });
     }
+      
 
     // Generate JWT token
     const token = jwt.sign(

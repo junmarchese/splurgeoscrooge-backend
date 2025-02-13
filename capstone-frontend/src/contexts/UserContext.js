@@ -1,51 +1,59 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 
-export const UserContext = createContext();
+//Create User Context
+const UserContext = createContext();
 
-export function UserProvider({ children }) {
-  const [user, setUser] = useState(() => {
-    // Load user data from localStorage on initial render
-    const storedUser = localStorage.getItem('user');
-    const storedToken = localStorage.getItem('token');
-    
-    if (storedUser && storedToken) {
-      return JSON.parse(storedUser);
-    }
-    return null;
-  });
-
-  // Update localStorage whenever user state changes
-  useEffect(() => {
-    if (user) {
-      localStorage.setItem('user', JSON.stringify(user));
-    } else {
-      localStorage.removeItem('user');
-      localStorage.removeItem('token');
-    }
-  }, [user]);
-
-  const login = (userData) => {
-    console.log('Setting user data:', userData); // Debugging
-    setUser(userData);
-  };
-
-  const logout = () => {
-    setUser(null);
-    localStorage.removeItem('user');
-    localStorage.removeItem('token');
-  };
-
-  return (
-    <UserContext.Provider value={{ user, login, logout }}>
-      {children}
-    </UserContext.Provider>
-  );
-}
-
+//Create Hook for using UserContext
 export function useUser() {
   const context = useContext(UserContext);
   if (!context) {
     throw new Error('useUser must be used within a UserProvider');
   }
   return context;
+}
+
+export function UserProvider({ children }) {
+  const [user, setUser] = useState(() => {
+    const storedUser = localStorage.getItem('user');
+    return storedUser ? JSON.parse(storedUser) : null;
+  });
+
+  const [isAuthenticated, setIsAuthenticated] = useState(() => {
+    return !!localStorage.getItem('token');
+  });
+
+  useEffect(() => {
+    if (user) {
+      localStorage.setItem('user', JSON.stringify(user));
+    } else {
+      localStorage.removeItem('user');
+    }
+  }, [user]);
+
+  const login = async (userData) => {
+    setUser(userData);
+    setIsAuthenticated(true);
+    localStorage.setItem('token', userData.token);
+  };
+
+  const logout = () => {
+    setUser(null);
+    setIsAuthenticated(false);
+    localStorage.removeItem('user');
+    localStorage.removeItem('token');
+    localStorage.removeItem('budgetState'); // Clear budget data on logout
+  };
+
+  const value = {
+    user,
+    isAuthenticated,
+    login,
+    logout
+  };
+
+  return (
+    <UserContext.Provider value={value}>
+      {children}
+    </UserContext.Provider>
+  );
 }

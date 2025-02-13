@@ -31,7 +31,7 @@ export default function LoginPage() {
       setTimeout(() => {
         console.log("✅ Login successful! Navigating to /budget-strategy");
         navigate("/budget-strategy", { replace: true });
-      }, 100);
+      }, 1000);
 
     } catch (error) {
       console.error("🔴 Login failed:", error.message);

@@ -9,7 +9,8 @@ export default function ProfilePage() {
     username: user?.username || '',
     firstName: user?.firstName || '',
     lastName: user?.lastName || '',
-    email: user?.email || ''
+    email: user?.email || '',
+    password: user?.password || '',
   });
 
   useEffect(() => {
@@ -18,7 +19,8 @@ export default function ProfilePage() {
         username: user.username || '',
         firstName: user.firstName || '',
         lastName: user.lastName || '',
-        email: user.email || ''
+        email: user.email || '',
+        password: user.password || ''
       });
     }
   }, [user]);

@@ -1,4 +1,4 @@
-import React,{ useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Box, Button, Container, Typography, Alert } from '@mui/material';
 import { useBudget } from '../contexts/BudgetContext';
@@ -6,7 +6,6 @@ import { useUser } from '../contexts/UserContext';
 import NavBar from '../components/NavBar';
 import CategoryInput from '../components/CategoryInput';
 import PriceFinderModal from '../components/PriceFinderModal';
-
 
 const savingsCategories = [
   {
@@ -29,76 +28,44 @@ const savingsCategories = [
 export default function SavingsPage() {
   const navigate = useNavigate();
   const { user } = useUser();
-  const [state] = useBudget();
-
-  console.log("state1:", state)
-
+  const { budget, updateSpending } = useBudget();
   const [useTotal, setUseTotal] = useState(false);
   const [openFinder, setOpenFinder] = useState(false);
   const [error, setError] = useState('');
 
-  const allocatedBudgetSavings = (state.percentages.savings / 100) * state.income;
-  const calculatedTotal = Object.entries(state.spending.savings)
-    .filter(([key]) => key !== 'total')
-    .reduce((sum, [_, value]) => sum + value, 0);
-  const totalSavings = useTotal ? state.spending.savings.total : calculatedTotal;
-  const remainingBalance = allocatedBudgetSavings - totalSavings;
+  const savingsSpending = budget.spending.savings || {};
+  const allocatedSavingsAmount = (budget.percentages.savings / 100) * budget.income;
 
-  useEffect(() => {
-    if (user) {
-      const savedSavings = localStorage.getItem(`savingsState_${user.username}`);
-      /*if (savedSavings) {
-        dispatch({ type: "LOAD_SAVED_STATE", payload: JSON.parse(savedSavings) });
-      }*/
-    }
-  }, [user, dispatch]);
+  const calculatedTotal = Object.entries(savingsSpending)
+    .filter(([key, value]) => key !== 'total' && typeof value === 'number')
+    .reduce((sum, [_, value]) => sum + value, 0);
+
+  const handleCategoryChange = (field, value) => {
+    const numericValue = parseFloat(value) || 0;
+    updateSpending('savings', field, numericValue);
+  };
 
   const handleContinue = () => {
-    if (totalSavings > allocatedBudgetSavings) {
-      setError('Savings allocation exceeds available amount!');
+    const totalSavings = useTotal ? (savingsSpending.total || 0) : calculatedTotal;
+
+    if (totalSavings > allocatedSavingsAmount) {
+      setError('Savings spending exceeds allocated budget!');
       return;
     }
+
+    updateSpending('savings', 'total', totalSavings);
     
-    if (totalSavings < allocatedBudgetSavings) {
-      setError('You must allocate the entire savings amount!');
-      return;
+    if (user?.username) {
+      localStorage.setItem(`savingsState_${user.username}`, JSON.stringify(savingsSpending));
     }
-    /*
-    dispatch({
-      type: 'UPDATE_SPENDING',
-      category: 'savings',
-      field: 'total',
-      value: totalSavings
-    });*/
-    
-    // Calculate remaining income balance
-    const totalIncome = state.income;
-    const totalNeeds = state.spending.needs.total || 0;
-    const totalWants = state.spending.wants.total || 0;
 
-    const remainingIncomeBalance = totalIncome - (totalNeeds + totalWants + totalSavings);
-
-    console.log("Dispatching remainingIncomeBalance:", remainingIncomeBalance);
-    
-    /*
-    dispatch({
-      type: 'SET_REMAINING_BALANCE',
-      payload: remainingIncomeBalance
-    });
-    */
-    
     navigate('/splurge-o-scrooge');
   };
 
-  console.log("state:", state)
   return (
-    <Container maxWidth="md" sx={{ pb: 8, pt: 10, backgroundColor: '#F7E7CE' }}>
-      <Typography variant="h1" gutterBottom align="center">
+    <Container maxWidth="md" sx={{ pb: 8, pt: 10, backgroundColor: '#DFE7FD' }}>
+      <Typography variant="h4" gutterBottom align="center">
         Savings
-      </Typography>
-
-      <Typography variant="h6" sx={{ mb: 3 }}>
-        <strong>Total Savings Target: ${allocatedBudgetSavings.toLocaleString()}</strong>
       </Typography>
 
       <Box sx={{ mb: 2 }}>
@@ -119,60 +86,48 @@ export default function SavingsPage() {
       </Box>
 
       {!useTotal ? (
-        <>
-          {savingsCategories.map(({ field, label, tooltip }) => (
-            <CategoryInput
-              key={field}
-              label={label}
-              value={state.spending.savings[field] || ""}
-              field={field}
-              tooltip={tooltip}
-              onChange={(field, value) => dispatch({
-                type: 'UPDATE_SPENDING',
-                category: 'savings',
-                field,
-                value
-              })}
-            />
-          ))}
-          <Typography variant="h6" sx={{ mt: 2 }}>
-            Remaining Savings Balance to Allocate: ${remainingBalance.toLocaleString()}
-          </Typography>
-        </>
+        savingsCategories.map(({ field, label, tooltip }) => (
+          <CategoryInput
+            key={field}
+            label={label}
+            value={savingsSpending[field] || ""}
+            field={field}
+            tooltip={tooltip}
+            onChange={handleCategoryChange}
+          />
+        ))
       ) : (
         <CategoryInput
-          label="Total Savings Allocation"
-          value={state.spending.savings.total || ''}
+          label="Total Savings"
+          value={savingsSpending.total || ""}
           field="total"
-          tooltip="Enter total savings allocation if known"
-          onChange={(field, value) => dispatch({
-            type: 'UPDATE_SPENDING',
-            category: 'savings',
-            field,
-            value
-          })}
+          tooltip="Enter total savings if known"
+          onChange={handleCategoryChange}
         />
       )}
 
-      {error && <Alert severity="error" sx={{ mt: 2, mb: 2 }}>{error}</Alert>}
+      <Typography variant="h6" sx={{ mt: 2, mb: 4 }}>
+        Total Savings: ${useTotal ? (savingsSpending.total || 0).toFixed(2) : calculatedTotal.toFixed(2)}
+      </Typography>
+
+      {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
 
       <Button
         variant="contained"
         size="large"
         onClick={handleContinue}
         fullWidth
-        sx={{ mt: 4 }}
+        sx={{ mb: 2 }}
       >
-        Continue to Splurge O' Scrooge
+        Continue to Splurge-O-Scrooge
       </Button>
 
       <NavBar />
 
       <PriceFinderModal
-              open={openFinder}
-              onClose={() => setOpenFinder(false)}
+        open={openFinder}
+        onClose={() => setOpenFinder(false)}
       />
-
     </Container>
   );
 }

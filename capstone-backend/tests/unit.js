@@ -93,23 +93,23 @@ describe('Auth Routes', () => {
       const response = await request(app)
         .post('/api/auth/signup')
         .send({
-          username: 'testuser',
-          password: 'password123',
+          username: 'testapp',
+          password: 'testapp123',
           firstName: 'Test',
-          lastName: 'User',
-          email: 'test@example.com'
+          lastName: 'App',
+          email: 'testapp@example.com'
         });
 
       expect(response.status).toBe(201);
       expect(response.body).toHaveProperty('token');
-      expect(response.body.user).toHaveProperty('username', 'testuser');
+      expect(response.body.user).toHaveProperty('username', 'testapp');
     });
 
     it('should return an error if required fields are missing', async () => {
       const response = await request(app)
         .post('/api/auth/signup')
         .send({
-          username: 'testuser'
+          username: 'testapp'
         });
 
       expect(response.status).toBe(400);
@@ -123,19 +123,19 @@ describe('Auth Routes', () => {
       await request(app)
         .post('/api/auth/signup')
         .send({
-          username: 'testuser',
-          password: 'password123',
+          username: 'testapp',
+          password: 'testapp123',
           firstName: 'Test',
-          lastName: 'User',
-          email: 'test@example.com'
+          lastName: 'App',
+          email: 'testapp@example.com'
         });
 
       // Then, log in with the same user
       const response = await request(app)
         .post('/api/auth/login')
         .send({
-          username: 'testuser',
-          password: 'password123'
+          username: 'testapp',
+          password: 'testapp123'
         });
 
       expect(response.status).toBe(200);

@@ -42,7 +42,7 @@ export default function SignupPage() {
     <Container maxWidth="sm" sx={{ pb: 8, pt: 10, backgroundColor: '#cccccc' }}>
       <Typography variant="h4" align="center" gutterBottom>
       </Typography>
-      <SignupForm onSubmit={handleSignup} />;
+      <SignupForm onSubmit={handleSignup} />
     </Container>
   );
 }
