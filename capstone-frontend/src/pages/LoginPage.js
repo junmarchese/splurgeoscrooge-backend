@@ -1,0 +1,50 @@
+import React from "react";
+import { useNavigate } from "react-router-dom";
+import { useUser } from "../contexts/UserContext";
+import LoginForm from "../components/LoginForm";
+import { Container, Typography } from "@mui/material";
+import { loginUser } from "../utils/api";
+
+export default function LoginPage() {
+  const navigate = useNavigate();
+  const { login } = useUser();
+
+  const handleLogin = async (formData) => {
+    try {
+      console.log("🔄 Attempting login...");
+
+      const data = await loginUser(formData);
+      console.log("✅ API Response:", data);
+
+      if (!data || !data.token || !data.user) {
+        throw new Error("Invalid login response. Missing token or user data.");
+      }
+
+      // First store token
+      localStorage.setItem("token", data.token);
+      
+      // Then update user context
+      console.log("Setting user data:", data.user); // Debugging
+      login(data.user);
+
+      // Wait a brief moment to ensure context is updated
+      setTimeout(() => {
+        console.log("✅ Login successful! Navigating to /budget-strategy");
+        navigate("/budget-strategy", { replace: true });
+      }, 100);
+
+    } catch (error) {
+      console.error("🔴 Login failed:", error.message);
+      alert(error.message || "Login failed. Please try again.");
+    }
+  };
+
+  return (
+    <Container maxWidth="sm">
+      <Typography variant="h4" align="center" gutterBottom>
+        Log Into Your Account
+      </Typography>
+      <LoginForm onSubmit={handleLogin} />
+    </Container>
+  );
+}
