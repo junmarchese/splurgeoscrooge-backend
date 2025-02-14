@@ -83,7 +83,7 @@ export default function WantsPage() {
   };
 
   return (
-    <Container maxWidth="md" sx={{ pb: 8, pt: 10, backgroundColor: '#FDE2E4' }}>
+    <Container maxWidth="md" sx={{ pb: 8, pt: 12 }}>
       <Typography variant="h4" gutterBottom align="center">
         Wants
       </Typography>

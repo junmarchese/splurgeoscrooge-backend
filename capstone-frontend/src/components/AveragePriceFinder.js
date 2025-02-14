@@ -80,8 +80,8 @@ export default function AveragePriceFinder() {
       {/* Search Input with AutoComplete */}
       <Autocomplete
         options={options}
-        getOptionLabel={(option) => option.title} // Display readable title
-        filterOptions={(x) => x} // Prevents frontend filtering to allow backend control
+        getOptionLabel={(option) => option.title} 
+        filterOptions={(x) => x} 
         loading={loading}
         inputValue={query}
         onInputChange={(event, newInputValue) => {
@@ -91,7 +91,7 @@ export default function AveragePriceFinder() {
         onChange={(event, newValue) => {
           if (newValue) {
             console.log("User selected:", newValue.title, "with seriesId:", newValue.seriesId);
-            setSelectedSeriesId(newValue.seriesId.trim()); // Ensure clean seriesId
+            setSelectedSeriesId(newValue.seriesId.trim()); 
           }
         }}
         renderInput={(params) => (

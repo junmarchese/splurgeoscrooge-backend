@@ -1,70 +1,170 @@
-# Getting Started with Create React App
+# Splurge O' Scrooge
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Overview
 
-## Available Scripts
+**Splurge O' Scrooge** is a financial planning app designed to help users make smart spending decisions using the **50-30-20 rule**. The app integrates **React** for the frontend and **Node.js, Express, PostgreSQL** for the backend, with API support for Consumer Price Index Average Price Data.
 
-In the project directory, you can run:
+## Features
 
-### `npm start`
+- **Budget Strategy Planning**: Categorize expenses into Needs, Wants, and Savings.
+- **Price Lookup**: Search average prices for various items.
+- **Decision-Making Tool**: Get insights on whether to splurge or save.
+- **User Authentication**: Signup/Login with JWT authentication.
+- **State Management**: Implemented using React Context & Hooks.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+---
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## Technologies Used
 
-### `npm test`
+### Frontend:
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+- React.js
+- React Router
+- Material UI
 
-### `npm run build`
+### Backend:
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+- Node.js
+- Express.js
+- PostgreSQL
+- Sequelize ORM
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### API Integration:
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+- **Consumer Price Index Average Price Data API**
 
-### `npm run eject`
+---
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+## Installation
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### 1. Clone the Repository
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+```sh
+# Clone frontend and backend separately
+git clone https://github.com/your-username/capstone-frontend.git
+git clone https://github.com/your-username/capstone-backend.git
+```
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+### 2. Install Dependencies
 
-## Learn More
+#### **Frontend**
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+```sh
+cd capstone-frontend
+npm install
+```
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+#### **Backend**
 
-### Code Splitting
+```sh
+cd ../capstone-backend
+npm install
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+### 3. Set Up Environment Variables
 
-### Analyzing the Bundle Size
+Create a `.env` file in the **backend** directory and add:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+```env
+DATABASE_URL=postgres://your-user:your-password@localhost:5432/your-database
+JWT_SECRET=your-secret-key
+PORT=5000
+```
 
-### Making a Progressive Web App
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+## Running the Application
 
-### Advanced Configuration
+### **Start Backend Server**
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+```sh
+cd capstone-backend
+npm run dev
+```
 
-### Deployment
+### **Start Frontend Server**
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+```sh
+cd ../capstone-frontend
+npm start
+```
 
-### `npm run build` fails to minify
+The frontend will be available at [**http://localhost:3000**](http://localhost:3000), and the backend API will be running at [**http://localhost:5000**](http://localhost:5000).
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+---
+
+## Running Tests
+
+### **Run Unit Tests**
+
+```sh
+npm test tests/unit.js
+```
+
+### **Run Integration Tests**
+
+```sh
+npm test tests/integration.js
+```
+
+---
+
+## API Routes
+
+### **Auth Routes**
+
+| Method | Endpoint           | Description                      |
+| ------ | ------------------ | -------------------------------- |
+| POST   | `/api/auth/signup` | Register a new user              |
+| POST   | `/api/auth/login`  | Authenticate user and return JWT |
+
+### **Budget Routes**
+
+| Method | Endpoint      | Description             |
+| ------ | ------------- | ----------------------- |
+| GET    | `/api/budget` | Get user budget details |
+| POST   | `/api/budget` | Create or update budget |
+
+### **Price Lookup Routes**
+
+| Method | Endpoint                            | Description                    |
+| ------ | ----------------------------------- | ------------------------------ |
+| GET    | `/api/price-lookup?query=ITEM_NAME` | Fetch average price of an item |
+
+---
+
+## Deployment
+
+### **Deploy Backend to Heroku**
+
+```sh
+heroku create your-app-name
+heroku addons:create heroku-postgresql:hobby-dev
+heroku config:set JWT_SECRET=your-secret-key
+```
+
+### **Deploy Frontend to Netlify**
+
+```sh
+npm run build
+netlify deploy
+```
+
+---
+
+## Contributing
+
+Pull requests are welcome! Please follow these guidelines:
+
+- Fork the repository
+- Create a feature branch (`git checkout -b feature-name`)
+- Commit changes (`git commit -m "Added new feature"`)
+- Push to the branch (`git push origin feature-name`)
+- Submit a pull request
+
+---
+
+## License
+
+This project is licensed under the MIT License.
+

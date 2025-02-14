@@ -20,7 +20,7 @@ export default function SignupForm({ onSubmit }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // ✅ Validate input before making request
+    // Validate input before making request
     if (!formData.username || !formData.password || !formData.email) {
       setError("❌ Please fill out all required fields (Username, Password, Email).");
       return;
@@ -30,7 +30,7 @@ export default function SignupForm({ onSubmit }) {
     setError(null);
 
     try {
-      await onSubmit(formData); // ✅ Call the passed `handleSignup` function
+      await onSubmit(formData); // Call the passed `handleSignup` function
     } catch (error) {
       setError(error.message || 'Signup failed. Please try again.');
     } finally {

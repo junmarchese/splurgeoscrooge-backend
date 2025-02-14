@@ -12,7 +12,7 @@ function ensureLoggedIn(req, res, next) {
 
   jwt.verify(token, JWT_SECRET, (err, decoded) => {
     if (err) {
-      console.error("JWT Verification Error:", err); // Log the error for debugging
+      console.error("JWT Verification Error:", err); 
       return res.status(403).json({ error: 'Invalid or expired token' });
     }
 

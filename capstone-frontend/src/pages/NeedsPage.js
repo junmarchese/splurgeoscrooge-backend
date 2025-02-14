@@ -51,7 +51,7 @@ export default function NeedsPage() {
   };
 
   return (
-    <Container maxWidth="md" sx={{ pb: 8, pt: 10, backgroundColor: '#e0f7f1' }}>
+    <Container maxWidth="md" sx={{ pb: 8, pt: 12 }}>
       <Typography variant="h4" gutterBottom align="center">
         Needs
       </Typography>

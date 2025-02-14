@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Container, Typography, TextField, Grid, Button, Alert } from "@mui/material";
+import { Container, Typography, Paper, Box, TextField, Grid, Button, Alert } from "@mui/material";
 import { useBudget } from "../contexts/BudgetContext";
 import NavBar from "../components/NavBar";
 
@@ -41,49 +41,90 @@ export default function BudgetStrategyPage() {
   };
 
   return (
-    <Container maxWidth="sm" sx={{ pt: 10 }}>
-      <Typography variant="h4" align="center" gutterBottom>
-        Set Your Budget Strategy
-      </Typography>
+    <>
+      <NavBar />
+      <Container maxWidth="md" sx={{ pb: 8, pt: 10 }}>
+        <Paper elevation={3} sx={{ p: 4, borderRadius: 2 }}>
+          <Typography variant="h4" align="center" gutterBottom>
+            Budget Strategy
+          </Typography>
 
-      <TextField
-        fullWidth
-        label="Monthly Income"
-        type="number"
-        value={income}
-        onChange={(e) => setIncome(e.target.value)}
-        margin="normal"
-      />
+          <Typography variant="body1" paragraph>
+            The 50-30-20 rule splits your after-tax/net income into 3 categories:
+          </Typography>
+          <Box component="ul" sx={{ pl: 3 }}>
+            <Typography component="li" variant="body2">
+              <strong>Needs (50%)</strong> - Essential expenses necessary for survival.
+            </Typography>
+            <Typography component="li" variant="body2">
+              <strong>Wants (30%)</strong> - Non-essential expenses enhancing quality of life.
+            </Typography>
+            <Typography component="li" variant="body2">
+              <strong>Savings (20%)</strong> - Funds for future financial stability.
+            </Typography>
+          </Box>
 
-      <Grid container spacing={2}>
-        {Object.entries(percentages).map(([category, value]) => (
-          <Grid item xs={12} key={category}>
-            <TextField
-              fullWidth
-              label={`${category.charAt(0).toUpperCase() + category.slice(1)} %`}
-              type="number"
-              value={value}
-              onChange={(e) => handlePercentageChange(category, e.target.value)}
-            />
+          {/* Income Input */}
+          <TextField
+            fullWidth
+            label="Monthly Income"
+            type="number"
+            value={income}
+            onChange={(e) => setIncome(e.target.value)}
+            margin="normal"
+            variant="outlined"
+          />
+
+          {/* Percentage Inputs */}
+          <Grid container spacing={2} sx={{ mt: 2 }}>
+            {Object.entries(percentages).map(([category, value]) => (
+              <Grid item xs={12} sm={4} key={category}>
+                <TextField
+                  fullWidth
+                  label={`${category.charAt(0).toUpperCase() + category.slice(1)} %`}
+                  type="number"
+                  value={value}
+                  onChange={(e) => handlePercentageChange(category, e.target.value)}
+                  variant="outlined"
+                />
+              </Grid>
+            ))}
           </Grid>
-        ))}
-      </Grid>
 
-      {error && (
-        <Alert severity="error" sx={{ mt: 2 }}>
-          {error}
-        </Alert>
-      )}
+          {/* Calculated Budget */}
+          <Typography variant="h6" align="center" sx={{ mt: 3 }}>
+            <strong>Calculated Budget:</strong>
+          </Typography>
+          <Box textAlign="center" sx={{ mt: 1, mb: 2 }}>
+            <Typography variant="body1">
+              <strong>Needs:</strong> ${((percentages.needs / 100) * income || 0).toFixed(2)}
+            </Typography>
+            <Typography variant="body1">
+              <strong>Wants:</strong> ${((percentages.wants / 100) * income || 0).toFixed(2)}
+            </Typography>
+            <Typography variant="body1">
+              <strong>Savings:</strong> ${((percentages.savings / 100) * income || 0).toFixed(2)}
+            </Typography>
+          </Box>
 
-      <Button
-        variant="contained"
-        fullWidth
-        onClick={handleCalculate}
-        sx={{ mt: 3 }}
-      >
-        Calculate Budget
-      </Button>
-    <NavBar />
-    </Container>
+          {/* Error Message */}
+          {error && (
+            <Alert severity="error" sx={{ mt: 2 }}>
+              {error}
+            </Alert>
+          )}
+
+          {/* Continue Button */}
+          <Button
+            variant="contained"
+            fullWidth
+            onClick={handleCalculate}
+            sx={{ mt: 3, py: 1.5 }}
+          >
+            Continue to Needs
+          </Button>
+        </Paper>
+      </Container>
+    </>
   );
 }

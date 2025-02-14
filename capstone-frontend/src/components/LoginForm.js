@@ -6,22 +6,22 @@ export default function LoginForm({ onSubmit }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  // ✅ Ensures state updates properly
+  // Ensures state updates properly
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
       ...prevData,
       [name]: value,
     }));
-    setError(null); // ✅ Clears error when user types
+    setError(null); // Clears error when user types
   };
 
-  // ✅ Ensuring submit logic properly updates state
+  // Ensuring submit logic properly updates state
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!formData.username || !formData.password) {
-      setError("❌ Username and Password are required.");
+      setError("Username and Password are required.");
       return;
     }
 
@@ -31,7 +31,7 @@ export default function LoginForm({ onSubmit }) {
     try {
       await onSubmit(formData);
     } catch (error) {
-      setError(error.message || "❌ Login failed. Please try again.");
+      setError(error.message || "Login failed. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -71,6 +71,7 @@ export default function LoginForm({ onSubmit }) {
             type="submit"
             disabled={loading}
             startIcon={loading && <CircularProgress size={20} />}
+            sx={{ backgroundColor: '2b92ed', color: 'black' }}
           >
             {loading ? "Logging In..." : "Log In"}
           </Button>

@@ -10,7 +10,7 @@ const authRoutes = require('./src/routes/authRoutes');
 
 const app = express();
 
-// ✅ Fix: CORS configuration to allow frontend access
+// Fix: CORS configuration to allow frontend access
 const corsOptions = {
   origin: "http://localhost:3000", // Allow frontend origin
   credentials: true,
@@ -21,19 +21,19 @@ app.use(cors(corsOptions));
 
 app.use(express.json());
 
-// ✅ Routes
+// Routes
 app.use('/api/prices', priceRoutes);
 app.use('/api/auth', authRoutes);
 
-// ✅ Database Sync
+// Database Sync
 sequelize.sync()
-  .then(() => console.log("✅ Database Synced"))
-  .catch(err => console.error("❌ Database Sync Error:", err));
+  .then(() => console.log("Database Synced"))
+  .catch(err => console.error("Database Sync Error:", err));
 
 app.get('/', (req, res) => {
   res.send('Welcome to the Splurge-O-Scrooge API');
 });
 
-// ✅ Start Server
+// Start Server
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`✅ Server running on port ${PORT}`));
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

@@ -3,7 +3,11 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "jest --runInBand --detectOpenHandles",
+    "test": "jest --detectOpenHandles",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "test:unit": "jest tests/unit.js",
+    "test:integration": "jest tests/integration.js",
     "db:migrate": "npx sequelize-cli db:migrate --config config/config.js",
     "db:seed": "npx sequelize-cli db:seed:all --config config/config.js",
     "db:status": "npx sequelize-cli db:migrate:status --config config/config.js"
@@ -25,10 +29,10 @@
     "sequelize": "^6.37.5"
   },
   "devDependencies": {
-    "jest": "^29.7.0",
+    "jest": "^27.5.1",
     "nodemon": "^3.1.9",
     "react-refresh-webpack-plugin": "^0.1.0",
-    "supertest": "^7.0.0",
+    "supertest": "^6.3.4",
     "webpack": "^5.97.1",
     "webpack-cli": "^6.0.1",
     "webpack-dev-server": "^5.2.0"

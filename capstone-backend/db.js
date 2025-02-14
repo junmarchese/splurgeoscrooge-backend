@@ -7,7 +7,7 @@ const pool = new Pool({
   ssl: process.env.NODE_ENV === "production" ? { rejectUnauthorized: false } : false,
 });
 
-// ✅ Ensure connection works
+// Ensure connection works
 sequelize.authenticate()
   .then(() => console.log("✅ Connected to database"))
   .catch(err => console.error("🔴 Database connection error:", err));

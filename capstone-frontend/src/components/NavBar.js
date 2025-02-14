@@ -7,13 +7,13 @@ import { useUser } from "../contexts/UserContext";
 
 export default function NavBar() {
   const navigate = useNavigate();
-  const { logout } = useUser(); // Removed unused 'user' to prevent ESLint warning
+  const { logout } = useUser(); 
   const [openFinder, setOpenFinder] = useState(false);
 
   return (
     <>
       {/* Top Navigation Bar */}
-      <AppBar position="fixed" sx={{ top: 0, backgroundColor: "#2E3B55", p: 1 }}>
+      <AppBar position="fixed" sx={{ top: 0, backgroundColor: "#bedef7", p: 1 }}>
         <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
           
           {/* Left Side: Home Link */}
@@ -77,9 +77,6 @@ export default function NavBar() {
       <PriceFinderModal
         open={openFinder}
         onClose={() => setOpenFinder(false)}
-        // onSelect={(item) => {
-        //   console.log("Selected item:", item);
-        // }}
       />
     </>
   );

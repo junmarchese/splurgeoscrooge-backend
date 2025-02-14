@@ -8,22 +8,25 @@ import AppRoutes from './routes/AppRoutes';
 
 const theme = createTheme({
   palette: {
-    primary: { main: '#2e7d32' },
-    secondary: { main: '#ff5722' }
-  }
+    primary: { main: '#E3F2FD' },
+    secondary: { main: '#ebf4fa' }
+  },
+  typography: {
+    fontFamily: "'Poppins', 'Quicksand', 'Nunito', sans-serif",
+  },
 });
 
 function App() {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <UserProvider>
         <BudgetProvider>
-          <Router>
-            <AppRoutes />
-          </Router>
+          <UserProvider>
+            <Router>
+              <AppRoutes />
+            </Router>
+          </UserProvider>
         </BudgetProvider>
-      </UserProvider>
     </ThemeProvider>
   );
 }

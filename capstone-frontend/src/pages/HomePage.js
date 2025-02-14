@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 
 export default function HomePage() {
   return (
-    <Container maxWidth="sm" sx={{ py: 4 }}>
+    <Container maxWidth="sm" sx={{ py: 4, pb: 8, pt: 10, backgroundColor: '#E3F2FD' }}>
       <Typography variant="h1" gutterBottom align="center">
         Welcome 
         <span style={{ color: "green", fontWeight: "bold" }}> SPLURGE </span> 
@@ -31,7 +31,7 @@ export default function HomePage() {
           <Typography variant="body2" paragraph>
             Already have an account?
           </Typography>
-          <Button variant="outlined" component={Link} to="/login">
+          <Button variant="contained" size="large" component={Link} to="/login" sx={{ backgroundColor: 'secondary.main', '&:hover': { backgroundColor: 'secondary.dark' } }}>
             LOG IN
           </Button>
         </Box>

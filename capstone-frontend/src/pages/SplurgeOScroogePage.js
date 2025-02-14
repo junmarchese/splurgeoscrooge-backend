@@ -63,46 +63,124 @@ export default function SplurgeOScroogePage() {
   };
 
   return (
-    <Container maxWidth="md" sx={{ pb: 8, pt: 10, backgroundColor: '#F8F7FF' }}>
-      <Typography variant="h4" gutterBottom align="center">
-        Splurge-O-Scrooge
+    <Container maxWidth="md" sx={{ pb: 8, pt: 12, backgroundColor: '#F8F7FF' }}>
+      <Typography variant="h1" gutterBottom align="center">
+        <span style={{ color: "green", fontWeight: "bold" }}>Splurge</span> O' 
+        <span style={{ color: "red", fontWeight: "bold" }}> Scrooge</span>
       </Typography>
 
-      <Typography variant="h6" gutterBottom align="center">
-        Remaining Balance: ${remainingBalance.toFixed(2)}
+      {/* Wishlist Label */}
+      <Typography
+        variant="h5"
+        sx={{
+          fontFamily: '"Comic Sans MS", "cursive", "fantasy"',
+          fontWeight: "bold",
+          textAlign: "center",
+          textShadow: "2px 2px 4px rgba(85, 85, 85, 0.6)",
+          mb: 2,
+          background: "linear-gradient(90deg, #c71585, #ff4500, #ffcc00, #32cd32, #1e90ff, #8a2be2)",
+          WebkitBackgroundClip: "text",
+          WebkitTextFillColor: "transparent",
+        }}
+      >
+        ✨ Your Wishlist Item ✨
       </Typography>
 
-      <Box sx={{ my: 4 }}>
-        <TextField
-          fullWidth
-          label="Enter Item Cost"
-          type="number"
-          value={wishlistItem}
-          onChange={(e) => setWishlistItem(e.target.value)}
-          sx={{ mb: 2 }}
-        />
+      {/* Wishlist Input Field */}
+      <TextField
+        fullWidth
+        value={wishlistItem}
+        onChange={(e) => setWishlistItem(e.target.value.replace(/[^0-9.]/g, ''))}
+        placeholder='Enter price of item'
+        InputProps={{ 
+          startAdornment: '$',
+          sx: {
+            fontSize: "1.5rem",
+            fontWeight: "bold",
+            color: "purple",
+          },
+        }}
+        sx={{
+          mb: 3,
+          backgroundColor: "#fff3e0",
+          borderRadius: "8px",
+          "& input::placeholder": {
+            color: "purple",
+          },
+        }}
+      />
 
+      {/* Splurge Button */}
+      <Box sx={{ display: "flex", justifyContent: "center" }}>
         <Button
           variant="contained"
-          fullWidth
+          size="large"
           onClick={handleCheck}
-          disabled={loadingGif}
-          sx={{ mb: 2 }}
+          sx={{ mb: 3, backgroundColor: '#dc64de', color: 'white', fontSize: '1.1rem' }}
         >
-          {loadingGif ? <CircularProgress size={24} /> : "Check If You Can Splurge"}
+          Splurge O' Scrooge?
         </Button>
-
-        {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
-
-        {result && (
-          <Box sx={{ textAlign: 'center', mt: 2 }}>
-            <Typography variant="h5" gutterBottom>
-              {result === 'approved' ? "Go ahead and treat yourself! 🎉" : "Better save that money! 💰"}
-            </Typography>
-            {gifUrl && <img src={gifUrl} alt="Reaction GIF" style={{ maxWidth: '100%' }} />}
-          </Box>
-        )}
       </Box>
+
+
+      {/* Error Message */}
+      {error && <Alert severity="error">{error}</Alert>}
+
+      {/* Result Section */}
+      {result && (
+        <Box 
+          sx={{ 
+            textAlign: 'center',
+            border: `50px solid ${result === 'approved' ? 'green' : 'red'}`,
+            borderRadius: '35px',
+            p: 4,
+            mb: 3
+          }}
+        >
+          <Typography 
+            variant="h4" 
+            sx={{ 
+              mb: 2,
+              fontWeight: "bold",
+              color: result === "approved" ? "green" : "red", 
+            }}
+          >
+            {result === 'approved' ? 'SPLURGE!' : 'SCROOGE!'}
+          </Typography>
+
+          {/* Show Loading Indicator while GIF is loading */}
+          {loadingGif ? (
+            <CircularProgress size={50} />
+          ) : (
+            gifUrl && (
+              <Box
+                component="img"
+                src={gifUrl}
+                alt="Giphy Image"
+                sx={{ width: "100%", maxWidth: 300, height: "auto", mb: 2 }}
+              />
+            )
+          )}
+
+          <Typography>
+            {result === "approved" ? (
+              <>
+                Your item fits within your remaining income balance of {" "}
+                <span style={{ fontWeight: "bold", fontSize: "2rem", color: "green" }}>
+                  ${remainingBalance.toLocaleString()}
+                </span>
+              </>
+            ) : (
+              <>
+                Your item exceeds your remaining income balance of{" "}
+                <span style={{ fontWeight: "bold", fontSize: "2rem", color: "red" }}>
+                  ${remainingBalance.toLocaleString()}
+                </span>
+              </>
+            )}
+          </Typography>
+        </Box>
+      )}
 
       <NavBar />
     </Container>

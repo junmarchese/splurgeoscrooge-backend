@@ -63,7 +63,7 @@ export default function SavingsPage() {
   };
 
   return (
-    <Container maxWidth="md" sx={{ pb: 8, pt: 10, backgroundColor: '#DFE7FD' }}>
+    <Container maxWidth="md" sx={{ pb: 8, pt: 12 }}>
       <Typography variant="h4" gutterBottom align="center">
         Savings
       </Typography>
