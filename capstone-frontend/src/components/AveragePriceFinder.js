@@ -132,7 +132,7 @@ export default function AveragePriceFinder() {
       {priceData && (
         <Box sx={{ mt: 3 }}>
           <Typography variant="h6">
-            Average Price: ${parseFloat(priceData.value).toFixed(2)} ({priceData.periodName} {priceData.year})
+            Average Price: ${parseFloat(priceData.value).toFixed(2)} (Latest Observation: {priceData.periodName} {priceData.year})
           </Typography>
           <Typography variant="body2" color="textSecondary" sx={{ mt: 1 }}>
             Data retrieved from BLS.gov on {new Date().toLocaleDateString()}.

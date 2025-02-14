@@ -179,6 +179,11 @@ export default function SplurgeOScroogePage() {
               </>
             )}
           </Typography>
+
+           {/* Giphy Attribution */}
+           <Typography variant="body2" sx={{ mt: 1, fontSize: "12px", color: "gray" }}>
+            Powered by <a href="https://giphy.com/" target="_blank" rel="noopener noreferrer">GIPHY</a>
+          </Typography>
         </Box>
       )}
 

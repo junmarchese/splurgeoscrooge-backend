@@ -44,7 +44,7 @@ export default function SignupPage() {
       if (userData.token && userData.user) {
         login(userData);
         localStorage.setItem("token", userData.token);
-        navigate("/budget-strategy");
+        navigate("/");
       } else {
         setError('Invalid response from server. Please try again.');
       }

@@ -135,20 +135,17 @@ npm test tests/integration.js
 
 ## Deployment
 
-### **Deploy Backend to Heroku**
+### **Deploy Backend to Supabase**
 
 ```sh
-heroku create your-app-name
-heroku addons:create heroku-postgresql:hobby-dev
-heroku config:set JWT_SECRET=your-secret-key
+NODE_ENV: production
+DATABASE_URL: https://trbztvdblzwjmucvqgxx.supabase.co
+JWT_SECRET=secret-dev
 ```
 
-### **Deploy Frontend to Netlify**
+### **Deploy Frontend to Render**
 
-```sh
-npm run build
-netlify deploy
-```
+https://splurgeoscrooge-backend.onrender.com
 
 ---
 
